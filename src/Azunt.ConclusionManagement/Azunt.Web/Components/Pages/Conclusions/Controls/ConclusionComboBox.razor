@@ -1,0 +1,25 @@
+@using Azunt.ConclusionManagement
+@inject IConclusionRepository RepositoryReference
+
+<select class="form-select" @bind="SelectedValue">
+    <option value="">-- Select Conclusion --</option>
+    @foreach (var conclusion in conclusions)
+    {
+        <option value="@conclusion.Name">@conclusion.Name</option>
+    }
+</select>
+
+@code {
+    private List<Conclusion> conclusions = new();
+
+    [Parameter]
+    public string? SelectedValue { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> SelectedValueChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        conclusions = await RepositoryReference.GetAllAsync();
+    }
+}
