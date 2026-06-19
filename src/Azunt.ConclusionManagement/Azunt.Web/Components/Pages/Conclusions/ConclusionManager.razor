@@ -31,23 +31,41 @@
         }
         else
         {
-            <div class="table-responsive" style="min-height: 400px;">
-                <table class="table table-bordered table-hover align-middle">
+            <div class="table-responsive conclusion-table-wrapper">
+                <table class="table table-bordered table-hover align-middle conclusion-table">
+                    <colgroup>
+                        <col style="width: 220px;" />
+                        <col style="width: 650px;" />
+                        <col style="width: 180px;" />
+                        <col style="width: 100px;" />
+                        <col style="width: 200px;" />
+                    </colgroup>
+
                     <thead class="thead-light">
                         <tr>
-                            <th class="text-center text-nowrap" @onclick="@(() => SortBy(nameof(Azunt.ConclusionManagement.Conclusion.Name)))" style="cursor: pointer; width: 220px;">
+                            <th class="text-center text-nowrap"
+                                @onclick="@(() => SortBy(nameof(Azunt.ConclusionManagement.Conclusion.Name)))"
+                                style="cursor: pointer;">
                                 Name <Azunt.Components.Sorting.SortOrderArrow SortColumn="Name" SortOrder="@sortOrder" />
                             </th>
-                            <th class="text-center" @onclick="@(() => SortBy(nameof(Azunt.ConclusionManagement.Conclusion.Content)))" style="cursor: pointer;">
+
+                            <th class="text-center"
+                                @onclick="@(() => SortBy(nameof(Azunt.ConclusionManagement.Conclusion.Content)))"
+                                style="cursor: pointer;">
                                 Content <Azunt.Components.Sorting.SortOrderArrow SortColumn="Content" SortOrder="@sortOrder" />
                             </th>
-                            <th class="text-center text-nowrap" @onclick="@(() => SortBy(nameof(Azunt.ConclusionManagement.Conclusion.CreatedAt)))" style="cursor: pointer; width: 180px;">
+
+                            <th class="text-center text-nowrap"
+                                @onclick="@(() => SortBy(nameof(Azunt.ConclusionManagement.Conclusion.CreatedAt)))"
+                                style="cursor: pointer;">
                                 Created <Azunt.Components.Sorting.SortOrderArrow SortColumn="CreatedAt" SortOrder="@sortOrder" />
                             </th>
-                            <th class="text-center text-nowrap" style="width: 100px;">Active</th>
-                            <th class="text-center text-nowrap" style="width: 180px;">Actions</th>
+
+                            <th class="text-center text-nowrap">Active</th>
+                            <th class="text-center text-nowrap">Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @if (models.Count == 0)
                         {
@@ -60,23 +78,34 @@
                             @foreach (var m in models)
                             {
                                 <tr>
-                                    <td class="text-nowrap">
+                                    <td class="text-nowrap conclusion-name-cell">
                                         <strong>@m.Name</strong>
                                     </td>
-                                    <td>
+
+                                    <td class="conclusion-content-cell">
                                         @if (string.IsNullOrWhiteSpace(m.Content))
                                         {
-                                            <span class="text-muted">No content</span>
+                                            <textarea class="form-control conclusion-content-viewer text-muted"
+                                                      rows="7"
+                                                      readonly
+                                                      placeholder="No content"></textarea>
                                         }
                                         else
                                         {
-                                            <span>@m.Content</span>
+                                            <textarea class="form-control conclusion-content-viewer"
+                                                      rows="7"
+                                                      readonly>@m.Content</textarea>
                                         }
                                     </td>
-                                    <td class="text-center text-nowrap small">@ShowTimeOrDate(m.CreatedAt)</td>
+
+                                    <td class="text-center text-nowrap small">
+                                        @ShowTimeOrDate(m.CreatedAt)
+                                    </td>
+
                                     <td class="text-center">
                                         <input type="checkbox" checked="@(m.Active == true)" disabled />
                                     </td>
+
                                     <td class="text-center text-nowrap">
                                         <button class="btn btn-sm btn-primary" @onclick="() => EditBy(m)">Edit</button>
                                         <button class="btn btn-sm btn-danger" @onclick="() => DeleteBy(m)">Del</button>
@@ -101,10 +130,10 @@
 </div>
 
 <Azunt.Web.Components.Pages.Conclusions.Components.ModalForm @ref="EditorFormReference"
-                                                         ModelSender="model"
-                                                         CreateCallback="CreateOrEdit"
-                                                         EditCallback="CreateOrEdit"
-                                                         UserName="@UserName">
+                                                             ModelSender="model"
+                                                             CreateCallback="CreateOrEdit"
+                                                             EditCallback="CreateOrEdit"
+                                                             UserName="@UserName">
     <EditorFormTitle>@EditorFormTitle</EditorFormTitle>
 </Azunt.Web.Components.Pages.Conclusions.Components.ModalForm>
 
@@ -149,3 +178,45 @@
         </div>
     </div>
 }
+
+<style>
+    .conclusion-table-wrapper {
+        min-height: 400px;
+        overflow-x: auto;
+    }
+
+    .conclusion-table {
+        min-width: 1350px;
+        table-layout: fixed;
+    }
+
+    .conclusion-name-cell {
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: top;
+    }
+
+    .conclusion-content-cell {
+        vertical-align: top;
+    }
+
+    .conclusion-content-viewer {
+        width: 100%;
+        min-height: 96px;
+        max-height: 180px;
+        overflow: auto;
+        resize: both;
+        white-space: pre;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        background-color: #f8f9fa;
+        cursor: default;
+    }
+
+        .conclusion-content-viewer:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+</style>
