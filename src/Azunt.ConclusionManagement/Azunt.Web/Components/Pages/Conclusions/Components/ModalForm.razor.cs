@@ -16,6 +16,7 @@ public partial class ModalForm : ComponentBase
     }
 
     [Parameter] public string UserName { get; set; } = "";
+    [Parameter] public string? ConnectionString { get; set; }
     [Parameter] public RenderFragment EditorFormTitle { get; set; } = null!;
     [Parameter] public Conclusion ModelSender { get; set; } = null!;
     [Parameter] public Action CreateCallback { get; set; } = null!;
@@ -53,12 +54,12 @@ public partial class ModalForm : ComponentBase
         if (ModelSender.Id == 0)
         {
             ModelSender.CreatedAt = DateTimeOffset.UtcNow;
-            await RepositoryReference.AddAsync(ModelSender);
+            await RepositoryReference.AddAsync(ModelSender, ConnectionString);
             CreateCallback?.Invoke();
         }
         else
         {
-            await RepositoryReference.UpdateAsync(ModelSender);
+            await RepositoryReference.UpdateAsync(ModelSender, ConnectionString);
             await EditCallback.InvokeAsync(true);
         }
 

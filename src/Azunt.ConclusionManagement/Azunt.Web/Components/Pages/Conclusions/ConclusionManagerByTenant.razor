@@ -1,5 +1,6 @@
-@page "/Conclusions"
-@page "/Conclusions/Manage"
+@page "/ConclusionsByTenant"
+@page "/Conclusions/ByTenant"
+@page "/ConclusionsByTenant/Manage"
 
 @namespace Azunt.Web.Pages.Conclusions
 @using Microsoft.AspNetCore.Components.Web
@@ -8,7 +9,7 @@
 
 <h3 class="mt-1 mb-1 d-flex justify-content-between align-items-center">
     <span class="d-flex align-items-center">
-        Conclusions
+        Conclusions By Tenant
         <button type="button" class="btn btn-sm btn-primary ms-2" @onclick="ShowEditorForm">Add New</button>
     </span>
 
@@ -22,6 +23,11 @@
         </FluentButton>
     </span>
 </h3>
+
+<div class="alert alert-info py-2 mb-2 conclusion-tenant-info">
+    <strong>Tenant:</strong> @TenantName
+    <span class="ms-2 text-muted">@DisplayConnectionString</span>
+</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -70,7 +76,7 @@
                         @if (models.Count == 0)
                         {
                             <tr>
-                                <td colspan="5" class="text-center">No data.</td>
+                                <td colspan="5" class="text-center">No tenant data.</td>
                             </tr>
                         }
                         else
@@ -125,7 +131,7 @@
     </div>
 
     <div class="col-md-12">
-        <Azunt.Components.Search.SearchBox placeholder="Search Conclusions..." SearchQueryChanged="Search" />
+        <Azunt.Components.Search.SearchBox placeholder="Search tenant Conclusions..." SearchQueryChanged="Search" />
     </div>
 </div>
 
@@ -133,7 +139,8 @@
                                                          ModelSender="model"
                                                          CreateCallback="CreateOrEdit"
                                                          EditCallback="CreateOrEdit"
-                                                         UserName="@UserName">
+                                                         UserName="@UserName"
+                                                         ConnectionString="@TenantConnectionString">
     <EditorFormTitle>@EditorFormTitle</EditorFormTitle>
 </Azunt.Web.Components.Pages.Conclusions.Components.ModalForm>
 
@@ -143,11 +150,11 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content shadow">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete Conclusion</h5>
+                    <h5 class="modal-title">Delete Tenant Conclusion</h5>
                     <button type="button" class="btn-close" aria-label="Close" @onclick="DeleteClose"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete <strong>@model.Name</strong>?</p>
+                    <p>Are you sure you want to delete <strong>@model.Name</strong> from <strong>@TenantName</strong>?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" @onclick="DeleteClick">Yes, Delete</button>
@@ -168,7 +175,7 @@
                     <button type="button" class="btn-close" aria-label="Close" @onclick="ToggleClose"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Do you want to change the Active state of <strong>@model.Name</strong>?</p>
+                    <p>Do you want to change the Active state of <strong>@model.Name</strong> in <strong>@TenantName</strong>?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" @onclick="ToggleClick">Yes, Change</button>
@@ -180,6 +187,10 @@
 }
 
 <style>
+    .conclusion-tenant-info {
+        font-size: 0.9rem;
+    }
+
     .conclusion-table-wrapper {
         min-height: 400px;
         overflow-x: auto;

@@ -3,6 +3,7 @@ using Azunt.Web.Components;
 using Azunt.Web.Components.Account;
 using Azunt.Web.Components.Pages.Conclusions;
 using Azunt.Web.Data;
+using Azunt.Web.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,9 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+// Azunt.Web 테스트 프로젝트에서 현재 사용자와 테넌트 연결 문자열을 제공하는 In-Memory UserService입니다.
+builder.Services.AddScoped<IUserService, InMemoryUserService>();
+
 // Conclusion CRUD 테스트는 SQL Server 게시 없이 EF Core In-Memory 저장소로 바로 실행합니다.
 builder.Services.AddDependencyInjectionContainerForConclusionApp(
     mode: ConclusionServicesRegistrationExtensions.RepositoryMode.EfCoreInMemory);
@@ -56,6 +60,7 @@ builder.Services.AddDependencyInjectionContainerForConclusionApp(
 var app = builder.Build();
 
 await ConclusionSeedData.InitializeAsync(app.Services);
+await ConclusionTenantSeedData.InitializeAsync(app.Services);
 
 if (app.Environment.IsDevelopment())
 {
